@@ -1,0 +1,21 @@
+name: PPJ banco de fotos (una vez)
+on:
+  push:
+    paths: ['ppj/banco/urls.txt']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cd ppj/banco
+          while read -r name url; do [ -n "$name" ] && curl -fsSL -o "$name.png" "$url"; done < urls.txt
+          ls -la
+      - run: |
+          git config user.name "Alejandro Carrillo"
+          git config user.email "alexjandro5488@gmail.com"
+          git add ppj/banco/*.png
+          git commit -m "PPJ: banco de fotos para plantillas"
+          git push
